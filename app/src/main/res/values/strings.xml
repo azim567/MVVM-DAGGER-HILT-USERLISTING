@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">UserListing</string>
+    <string name="search_user">search by user name</string>
+    <string name="str_no_result_found">NO RESULT FOUND</string>
+</resources>
