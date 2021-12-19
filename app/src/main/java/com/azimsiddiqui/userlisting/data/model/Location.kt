@@ -1,4 +1,4 @@
-package com.azimsiddiqui.userlisting.data
+package com.azimsiddiqui.userlisting.data.model
 
 data class Location(
     val city: String,

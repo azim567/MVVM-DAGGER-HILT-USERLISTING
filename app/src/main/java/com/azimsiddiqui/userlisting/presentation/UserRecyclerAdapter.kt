@@ -1,4 +1,4 @@
-package com.azimsiddiqui.userlisting.ui
+package com.azimsiddiqui.userlisting.presentation
 
 
 import android.view.LayoutInflater
@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.azimsiddiqui.userlisting.R
-import com.azimsiddiqui.userlisting.data.User
+import com.azimsiddiqui.userlisting.data.model.User
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import kotlinx.android.synthetic.main.activity_user_detail.view.*
 import kotlinx.android.synthetic.main.item_user_list_grid_row.view.*
 
 class UserRecyclerAdapter(private var listener: UserItemClickListener) : RecyclerView.Adapter<UserRecyclerAdapter.UserViewHolder>() {

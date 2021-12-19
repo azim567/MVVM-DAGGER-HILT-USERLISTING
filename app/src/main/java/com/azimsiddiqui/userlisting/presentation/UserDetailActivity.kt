@@ -1,14 +1,12 @@
-package com.azimsiddiqui.userlisting.ui
+package com.azimsiddiqui.userlisting.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.method.TextKeyListener
 import android.view.View
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import com.azimsiddiqui.userlisting.R
-import com.azimsiddiqui.userlisting.UserViewModel
-import com.azimsiddiqui.userlisting.data.UserDetailResponse
+import com.azimsiddiqui.userlisting.presentation.viewmodel.UserViewModel
+import com.azimsiddiqui.userlisting.data.model.UserDetailResponse
 import com.azimsiddiqui.userlisting.databinding.ActivityUserDetailBinding
 import com.azimsiddiqui.userlisting.di.Constants.EXTRA_USER_ID
 import com.bumptech.glide.Glide

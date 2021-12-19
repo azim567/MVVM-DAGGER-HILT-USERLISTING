@@ -1,12 +1,11 @@
-package com.azimsiddiqui.userlisting.network
+package com.azimsiddiqui.userlisting.data.api
 
-import com.azimsiddiqui.userlisting.data.UserDetailResponse
-import com.azimsiddiqui.userlisting.data.UserListResponse
+import com.azimsiddiqui.userlisting.data.model.UserDetailResponse
+import com.azimsiddiqui.userlisting.data.model.UserListResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 interface ApiService {
 

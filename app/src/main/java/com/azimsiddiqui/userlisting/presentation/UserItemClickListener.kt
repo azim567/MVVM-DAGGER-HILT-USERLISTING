@@ -1,4 +1,4 @@
-package com.azimsiddiqui.userlisting.ui
+package com.azimsiddiqui.userlisting.presentation
 
 interface UserItemClickListener {
     fun onClick(id:String)

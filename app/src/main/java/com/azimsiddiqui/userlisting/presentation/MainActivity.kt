@@ -1,4 +1,4 @@
-package com.azimsiddiqui.userlisting.ui
+package com.azimsiddiqui.userlisting.presentation
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -6,22 +6,16 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.LinearLayout
 import androidx.activity.viewModels
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.azimsiddiqui.userlisting.R
-import com.azimsiddiqui.userlisting.UserViewModel
-import com.azimsiddiqui.userlisting.data.User
-import com.azimsiddiqui.userlisting.data.UserListResponse
+import com.azimsiddiqui.userlisting.presentation.viewmodel.UserViewModel
+import com.azimsiddiqui.userlisting.data.model.User
 import com.azimsiddiqui.userlisting.databinding.ActivityMainBinding
 import com.azimsiddiqui.userlisting.di.Constants.EXTRA_USER_ID
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
@@ -104,7 +98,7 @@ class MainActivity : AppCompatActivity(),UserItemClickListener {
         binding.mainScreen.pbLoading.visibility=View.VISIBLE
         viewModel.userListLiveData.observe(this, { userResponse ->
             userResponse?.let {
-                userList.addAll(it.data)
+                userList.addAll(it)
                 userRecyclerAdapter=UserRecyclerAdapter(this)
                 binding.mainScreen.rvUserList.adapter=userRecyclerAdapter
                 if(userList.isEmpty()){
