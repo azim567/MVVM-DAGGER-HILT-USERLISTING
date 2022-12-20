@@ -44,16 +44,24 @@ class UserDetailActivity : AppCompatActivity() {
     private fun observeLiveEvent() {
         binding.pbLoading.visibility = View.VISIBLE
         viewModel.userDetailsLiveData.observe(this, Observer { userDetail ->
-
-            userDetail?.let {
-                setupUI(it)
+            when(userDetail) {
+                is ApiResult.Loading -> {
+                    binding.pbLoading.visibility = View.VISIBLE
+                }
+                is ApiResult.Success -> {
+                    binding.pbLoading.visibility = View.GONE
+                    userDetail.data?.let {
+                        setupUI(it)
+                    }
+                }
+                is ApiResult.Error -> {
+                    binding.pbLoading.visibility = View.GONE
+                }
             }
-
         })
     }
 
     private fun setupUI(user: UserDetailResponse) {
-        binding.pbLoading.visibility = View.GONE
         with(binding) {
             Glide.with(this@UserDetailActivity)
                 .load(user.picture)

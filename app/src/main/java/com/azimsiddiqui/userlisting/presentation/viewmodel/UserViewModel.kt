@@ -10,6 +10,7 @@ import com.azimsiddiqui.userlisting.data.model.UserDetailResponse
 import com.azimsiddiqui.userlisting.data.model.UserListResponse
 import com.azimsiddiqui.userlisting.domain.usecase.GetAllUsersUseCase
 import com.azimsiddiqui.userlisting.domain.usecase.GetUserByUserIdUseCase
+import com.azimsiddiqui.userlisting.presentation.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,39 +18,39 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val allUsersUseCase: GetAllUsersUseCase,
-    private val userByUserIdUseCase: GetUserByUserIdUseCase
+    private val userByUserIdUseCase: GetUserByUserIdUseCase,
 ) : ViewModel() {
 
-    private var _userListLiveData = MutableLiveData<List<User>?>()
-    val userListLiveData: LiveData<List<User>?>
+    private var _userListLiveData = MutableLiveData<ApiResult<List<User>?>>()
+    val userListLiveData: LiveData<ApiResult<List<User>?>>
         get() = _userListLiveData
 
-    private var _userDetailsLiveData = MutableLiveData<UserDetailResponse?>()
-    val userDetailsLiveData: LiveData<UserDetailResponse?>
+    private var _userDetailsLiveData = MutableLiveData<ApiResult<UserDetailResponse?>>()
+    val userDetailsLiveData: LiveData<ApiResult<UserDetailResponse?>>
         get() = _userDetailsLiveData
 
     fun getUserList() {
         viewModelScope.launch {
-            val userList = allUsersUseCase.execute()
-            _userListLiveData.value = userList
-//            if (response.isSuccessful) {
-//                _userListLiveData.value = response.body() as UserListResponse
-//            } else {
-//                Log.i("error", "getUserList: ${response.message()} ")
-//            }
+            _userListLiveData.value = ApiResult.Loading()
+            try {
+                val apiResult = allUsersUseCase.execute()
+                _userListLiveData.value = apiResult
+            } catch (e: Exception) {
+                _userListLiveData.value = ApiResult.Error(e.message)
+            }
         }
     }
 
-    fun getUserDetail(id:String){
+    fun getUserDetail(id: String) {
         viewModelScope.launch {
-            val userDetail = userByUserIdUseCase.execute(id)
-            _userDetailsLiveData.value = userDetail
-//            if(response.isSuccessful){
-//                _userDetailsLiveData.value=response.body() as UserDetailResponse
-//            }
-//            else{
-//                Log.i("error", "userDetail: ${response.message()} ")
-//            }
+            _userListLiveData.value = ApiResult.Loading()
+            try {
+                val userDetail = userByUserIdUseCase.execute(id)
+                _userDetailsLiveData.value = userDetail
+            } catch (e: Exception) {
+                _userListLiveData.value = ApiResult.Error(e.message)
+            }
+
         }
     }
 

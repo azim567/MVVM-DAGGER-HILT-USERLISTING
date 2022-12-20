@@ -11,11 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.item_user_list_grid_row.view.*
 
-class UserRecyclerAdapter(private var listener: UserItemClickListener) : RecyclerView.Adapter<UserRecyclerAdapter.UserViewHolder>() {
+class UserRecyclerAdapter(private var listener: UserItemClickListener) :
+    RecyclerView.Adapter<UserRecyclerAdapter.UserViewHolder>() {
 
-    private  var userList=ArrayList<User>()
-    private var isGrid=false
-    inner class UserViewHolder(itemView: View):RecyclerView.ViewHolder(itemView){
+    private var userList = ArrayList<User>()
+    private var isGrid = false
+
+    inner class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(user: User) {
             Glide.with(itemView.context)
                 .load(user.picture)
@@ -33,14 +35,14 @@ class UserRecyclerAdapter(private var listener: UserItemClickListener) : Recycle
 
     }
 
-    fun setLayoutType(isGrid:Boolean){
-        this.isGrid=isGrid
+    fun setLayoutType(isGrid: Boolean) {
+        this.isGrid = isGrid
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        var layout=if(isGrid) R.layout.item_user_list_grid_row else R.layout.item_user_list_horizontal
-        val layoutInflater=LayoutInflater.from(parent.context).inflate(layout,parent,false)
-       return UserViewHolder(layoutInflater)
+        var layout = if (isGrid) R.layout.item_user_list_grid_row else R.layout.item_user_list_horizontal
+        val layoutInflater = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        return UserViewHolder(layoutInflater)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
@@ -48,10 +50,10 @@ class UserRecyclerAdapter(private var listener: UserItemClickListener) : Recycle
     }
 
     override fun getItemCount(): Int {
-       return userList.size
+        return userList.size
     }
 
-    fun setData(list:List<User>){
+    fun setData(list: List<User>) {
         userList.clear()
         userList.addAll(list)
         notifyDataSetChanged()

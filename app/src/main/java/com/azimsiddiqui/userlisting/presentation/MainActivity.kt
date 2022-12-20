@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,24 +20,24 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),UserItemClickListener {
+class MainActivity : AppCompatActivity(), UserItemClickListener {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: UserViewModel by viewModels()
-    private  var userList= ArrayList<User>()
-    private  var filteredList= ArrayList<User>()
+    private var userList = ArrayList<User>()
+    private var filteredList = ArrayList<User>()
     private lateinit var userRecyclerAdapter: UserRecyclerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         supportActionBar?.hide()
-        toolbar.title="User List"
+        toolbar.title = "User List"
 
         viewModel.getUserList()
         observeLiveEvent()
         initRecyclerView()
-        binding.mainScreen.ivGrid.setOnClickListener{
+        binding.mainScreen.ivGrid.setOnClickListener {
             changeRowToGridLayout()
         }
         binding.mainScreen.ivLinear.setOnClickListener {
@@ -51,13 +52,13 @@ class MainActivity : AppCompatActivity(),UserItemClickListener {
                 s.toString().let { query ->
                     if (query.isNotEmpty()) {
                         var filteredList = userList.filter { it.firstName.contains(query, true) }
-                        if(filteredList.isEmpty()){
-                            binding.mainScreen.tvNoResult.visibility=View.VISIBLE
-                        }else{
-                            binding.mainScreen.tvNoResult.visibility=View.GONE
+                        if (filteredList.isEmpty()) {
+                            binding.mainScreen.tvNoResult.visibility = View.VISIBLE
+                        } else {
+                            binding.mainScreen.tvNoResult.visibility = View.GONE
                         }
                         userRecyclerAdapter.setData(filteredList)
-                    }else{
+                    } else {
                         userRecyclerAdapter.setData(userList)
                     }
 
@@ -72,7 +73,7 @@ class MainActivity : AppCompatActivity(),UserItemClickListener {
 
 
     private fun changeGridToRowLayout() {
-        userRecyclerAdapter.setLayoutType(false)
+        userRecyclerAdapter.setLayoutType(isGrid = false)
         binding.mainScreen.rvUserList.apply {
             layoutManager = LinearLayoutManager(applicationContext)
             adapter = userRecyclerAdapter
@@ -80,43 +81,56 @@ class MainActivity : AppCompatActivity(),UserItemClickListener {
     }
 
     private fun changeRowToGridLayout() {
-        userRecyclerAdapter.setLayoutType(true)
+        userRecyclerAdapter.setLayoutType(isGrid = true)
         binding.mainScreen.rvUserList.apply {
-            layoutManager=GridLayoutManager(this@MainActivity,2)
-            adapter=userRecyclerAdapter
+            layoutManager = GridLayoutManager(this@MainActivity, 2)
+            adapter = userRecyclerAdapter
         }
     }
 
     private fun initRecyclerView() {
         binding.mainScreen.rvUserList.apply {
-            layoutManager= LinearLayoutManager(this@MainActivity,RecyclerView.VERTICAL,false)
+            layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
             hasFixedSize()
         }
     }
 
     private fun observeLiveEvent() {
-        binding.mainScreen.pbLoading.visibility=View.VISIBLE
-        viewModel.userListLiveData.observe(this, { userResponse ->
-            userResponse?.let {
-                userList.addAll(it)
-                userRecyclerAdapter=UserRecyclerAdapter(this)
-                binding.mainScreen.rvUserList.adapter=userRecyclerAdapter
-                if(userList.isEmpty()){
-                    binding.mainScreen.tvNoResult.visibility=View.VISIBLE
-                }
-                else{
-                    binding.mainScreen.tvNoResult.visibility=View.GONE
-                }
-                binding.mainScreen.pbLoading.visibility=View.GONE
-                userRecyclerAdapter.setData(userList)
-            }
+        binding.mainScreen.pbLoading.visibility = View.VISIBLE
+        viewModel.userListLiveData.observe(this) { userResponse ->
 
-        })
+            when (userResponse) {
+                is ApiResult.Loading -> {
+                    showProgressBar(true)
+                }
+                is ApiResult.Success -> {
+                    showProgressBar(false)
+                    userResponse.data?.let {
+                        userList.addAll(it)
+                        userRecyclerAdapter = UserRecyclerAdapter(this)
+                        binding.mainScreen.rvUserList.adapter = userRecyclerAdapter
+
+                        binding.mainScreen.tvNoResult.visibility = if (userList.isEmpty()) View.VISIBLE else View.GONE
+                        userRecyclerAdapter.setData(userList)
+                    }
+                }
+                is ApiResult.Error -> {
+                    showProgressBar(false)
+                    userResponse.errorMessage?.let {
+                        Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showProgressBar(isVisible: Boolean) {
+        binding.mainScreen.pbLoading.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     override fun onClick(id: String) {
-    val intent=Intent(this,UserDetailActivity::class.java)
-        intent.putExtra(EXTRA_USER_ID,id)
+        val intent = Intent(this, UserDetailActivity::class.java)
+        intent.putExtra(EXTRA_USER_ID, id)
         startActivity(intent)
     }
 }
