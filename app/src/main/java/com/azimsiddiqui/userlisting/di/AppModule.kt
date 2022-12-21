@@ -40,7 +40,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun getApi()= getRetrofitInstance().create(ApiService::class.java)
+    fun getApi(): ApiService = getRetrofitInstance().create(ApiService::class.java)
 
 
     @Provides

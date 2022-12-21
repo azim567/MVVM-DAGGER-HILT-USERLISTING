@@ -17,9 +17,11 @@ class UserRepositoryImpl @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     ApiResult.Success(data = it.data)
-                }
+                } ?: ApiResult.Error(message = response.message())
             }
-            ApiResult.Error(message = response.message())
+            else {
+                ApiResult.Error(message = response.message())
+            }
         } catch (e: Exception) {
             ApiResult.Error(message = e.message.toString())
         }
